@@ -669,3 +669,65 @@ Try making this change in the above proof and see what difference it makes.) *)
   reflexivity. Qed. *)
 
   (* Exercise: 1 star, standard (plus_id_exercise) *)
+
+  Theorem plus_id_exercise : forall n m o : nat,
+  n = m -> m = o -> n + m = m + o.
+Proof.
+  intros n m o.
+  intros H.
+  intros B.
+  rewrite -> H.
+  rewrite -> B.
+  reflexivity. Qed.
+
+(* The Check command can also be used to examine the statements of previously declared
+lemmas and theorems. The two examples below are lemmas about multiplication that are
+proved in the standard library. (We will see how to prove them ourselves in the next chapter.) *)
+
+Check mult_n_O.
+(* ===> forall n : nat, 0 = n * 0 *)
+Check mult_n_Sm.
+(* ===> forall n m : nat, n * m + n = n * S m *)
+
+(* We can use the rewrite tactic with a previously proved theorem instead of a
+hypothesis from the context. If the statement of the previously proved theorem involves quantified
+variables, as in the example below, Coq tries to instantiate them by matching with the current goal. *)
+
+Theorem mult_n_0_m_0 : forall p q : nat,
+  (p * 0) + (q * 0) = 0.
+Proof.
+  intros p q.
+  rewrite <- mult_n_O.
+  rewrite <- mult_n_O.
+  reflexivity. Qed.
+
+  (* Exercise: 1 star, standard (mult_n_1) *)
+
+(* Use those two lemmas about multiplication that we just checked to prove the following theorem.
+Hint: recall that 1 is S O. *)
+Theorem mult_n_1 : forall p : nat,
+  p * S O = p.
+Proof.
+  intros p.
+  rewrite <- mult_n_Sm.
+  rewrite <- mult_n_O.
+  reflexivity. Qed.
+
+(* ------------------------------------------------------------------------ *)
+(* ------------------------------------------------------------------------ *)
+(* Proof by Case Analysis *)
+
+(* Of course, not everything can be proved by simple calculation and rewriting: In general,
+unknown, hypothetical values (arbitrary numbers, booleans, lists, etc.) can block simplification.
+For example, if we try to prove the following fact using the simpl tactic as above, we get stuck.
+(We then use the Abort command to give up on it for the moment.) *)
+Theorem plus_1_neq_0_firsttry : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros n.
+  simpl. (* does nothing! *)
+Abort.
+
+(* The reason for this is that the definitions of both eqb and + begin by performing a match on
+their first argument. But here, the first argument to + is the unknown number n and the argument
+to eqb is the compound expression n + 1; neither can be simplified. *)
