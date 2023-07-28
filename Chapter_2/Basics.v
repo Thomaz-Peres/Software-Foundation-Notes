@@ -506,8 +506,7 @@ Proof. simpl. reflexivity. Qed.
 
 (* We now have two symbols that look like equality: = and =?.
 We'll have much more to say about the differences and similarities between
-them later. For now, the main thing
-to notice is that x = y is a logical claim -- a "proposition" --
+them later. For now, the main thing to notice is that x = y is a logical claim -- a "proposition" --
 that we can try to prove, while x =? y is an expression whose value
 (either true or false) we can compute. *)
 
@@ -731,3 +730,118 @@ Abort.
 (* The reason for this is that the definitions of both eqb and + begin by performing a match on
 their first argument. But here, the first argument to + is the unknown number n and the argument
 to eqb is the compound expression n + 1; neither can be simplified. *)
+
+(* To make progress, we need to consider the possible forms of n separately. If n is O,
+then we can calculate the final result of (n + 1) =? 0 and check that it is, indeed, false.
+And if n = S n' for some n', then, although we don't know exactly what number n + 1 represents,
+we can calculate that, at least, it will begin with one S, and this is enough to calculate that,
+again, (n + 1) =? 0 will yield false. *)
+
+(* The tactic that tells Coq to consider, separately, the cases where n = O and where n = S n' is called destruct. *)
+(* To a better understood, it is good run that *)
+Theorem plus_1_neq_0 : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros n. destruct n as [ | n'] eqn:E.
+  - reflexivity.
+  - reflexivity. Qed.
+
+  (* The destruct generates two subgoals, which we must then prove, separately, in order to get Coq to accept the theorem. *)
+
+  (* The annotation "as [| n']" is called an intro pattern. It tells Coq what variable names to introduce in each subgoal.
+  In general, what goes between the square brackets is a list of lists of names, separated by |.
+  In this case, the first component is empty, since the O constructor is nullary (it doesn't have any arguments). The second component gives a single name, n', since S is a unary constructor.*)
+
+(* either n = 0 or n = S n' for some n'
+The eqn:E annotation tells destruct to give the name E to this equation.
+Leaving off the eqn:E annotation causes Coq to elide these assumptions in the subgoals
+in this case (n = 0 or n = S n')
+This slightly streamlines proofs where the assumptions are not explicitly used
+but it is better practice to keep them for the sake of documentation, as they can help keep you oriented when working with the subgoals *)
+
+(* The - signs on the second and third lines are called bullets,
+and they mark the parts of the proof that correspond to the two generated subgoals. 
+In this example, each of the subgoals is easily proved by a single use of reflexivity, which itself performs some simplification 
+
+e.g., the second one simplifies (S n' + 1) =? 0 to false by first rewriting (S n' + 1) to S (n' + 1), then unfolding eqb, and then simplifying the match *)
+
+(* Marking cases with bullets is optional: if bullets are not present, Coq simply asks you to prove each subgoal in sequence, one at a time. But it is a good idea to use bullets.
+Also, bullets instruct Coq to ensure that a subgoal is complete before trying to verify the next one *)
+
+(* For example, we use it next to prove that boolean negation is involutive *)
+Theorem negb_involutive : forall b : bool,
+  negb (negb b) = b.
+Proof.
+  intros b. destruct b eqn:E.
+  - reflexivity.
+  - reflexivity. Qed.
+
+(* Note that the destruct here has no as clause because none of the subcases of the destruct need to bind any variables, so there is no need to specify any names *)
+
+(* It is sometimes useful to invoke destruct inside a subgoal, generating yet more proof obligations. In this case, we use different kinds of bullets to mark goals on different "levels." For example: *)
+
+Theorem andb_commutative : forall b c, andb b c = andb c b.
+Proof.
+  intros b c. destruct b eqn:Eb.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + reflexivity.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + reflexivity.
+Qed.
+
+(* Besides - and +, we can use × (asterisk) or any repetition of a bullet symbol (e.g. -- or ***)
+(* as a bullet. We can also enclose sub-proofs in curly braces: *)
+Theorem andb_commutative' : forall b c, andb b c = andb c b.
+Proof.
+  intros b c. destruct b eqn:Eb.
+  { destruct c eqn:Ec.
+    { reflexivity. }
+    { reflexivity. } }
+  { 
+    destruct c eqn:Ec.
+      { 
+        reflexivity.
+      }
+      {
+        reflexivity.
+      }
+  }
+Qed.
+
+Theorem andb_commutative'' : forall b c, andb b c = andb c b.
+Proof.
+  intros b c. destruct b eqn:Eb.
+  * destruct c eqn:Ec.
+    ** reflexivity.
+    ** reflexivity.
+  * destruct c eqn:Ec.
+    ** reflexivity.
+    ** reflexivity.
+Qed.
+
+(* curly braces allow us to reuse the same bullet shapes at multiple levels in a proof. The choice of braces, bullets, or a combination of the two is purely a matter of taste *)
+
+Theorem andb3_exchange :
+  forall b c d, andb (andb b c) d = andb (andb b d) c.
+Proof.
+  intros b c d. destruct b eqn:Eb.
+  - destruct c eqn:Ec.
+    { destruct d eqn:Ed.
+      - reflexivity.
+      - reflexivity. }
+    { destruct d eqn:Ed.
+      - reflexivity.
+      - reflexivity. }
+  - destruct c eqn:Ec.
+    { destruct d eqn:Ed.
+      - reflexivity.
+      - reflexivity. }
+    { destruct d eqn:Ed.
+      - reflexivity.
+      - reflexivity. }
+Qed.
+
+(* ------------------------------------------------------------------------ *)
+(* Exercise: 2 stars, standard (andb_true_elim2) *)
