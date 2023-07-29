@@ -845,3 +845,28 @@ Qed.
 
 (* ------------------------------------------------------------------------ *)
 (* Exercise: 2 stars, standard (andb_true_elim2) *)
+
+(*
+  Prove the following claim, marking cases (and subcases) with bullets when you use destruct.
+  Hint: You will eventually need to destruct both Booleans, as in the theorems above. But, delay introducing the hypothesis until after you have an opportunity to simplify it.
+  Hint 2: When you reach contradiction in the hypotheses, focus on how to rewrite with that contradiction.
+*)
+
+Theorem plus_1_neq_0' : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros n. destruct n as [ | n'] eqn:E.
+  - reflexivity.
+  - reflexivity. Qed.
+
+Theorem andb_true_elim2 : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+  intros b c. destruct c eqn:E.
+  - destruct b eqn:Eb.
+    { reflexivity. }
+    { reflexivity. }
+  - destruct c eqn:Ec.
+    { destruct c eqn:Eb.
+        { reflexivity.}}
+Qed.
