@@ -852,21 +852,49 @@ Qed.
   Hint 2: When you reach contradiction in the hypotheses, focus on how to rewrite with that contradiction.
 *)
 
-Theorem plus_1_neq_0' : forall n : nat,
-  (n + 1) =? 0 = false.
-Proof.
-  intros n. destruct n as [ | n'] eqn:E.
-  - reflexivity.
-  - reflexivity. Qed.
+(* FOR THIS EXERCISE I TRIED MANY TIMES (yes, i'm not read the rest of the exercise, I only started doing xd, I'm stupid sry)
+  BUT, READING SOME THINGS AND SOME SOLUTIONS ON THE INTERNET, I DONE, THE FIRST IT IS ME TRYING ALONE
+  AND THE THIRD IT IS ME AFTER READING THE AND SE THE SECOND SOLUTION I FOUND. *)
 
 Theorem andb_true_elim2 : forall b c : bool,
-  andb b c = true -> c = true.
+ andb b c = true -> c = true.
 Proof.
   intros b c. destruct c eqn:E.
   - destruct b eqn:Eb.
     { reflexivity. }
     { reflexivity. }
-  - destruct c eqn:Ec.
-    { destruct c eqn:Eb.
-        { reflexivity.}}
+  - destruct b eqn:Eb.
+    { discriminate. }
+    { discriminate. }
 Qed.
+
+Theorem andb_true_elim2' : forall b c : bool,
+ andb b c = true -> c = true.
+Proof.
+ intros [] [].
+  - reflexivity.
+  - intros H.
+    rewrite <- H.
+    reflexivity.
+  - reflexivity.
+  - intro H.
+    rewrite <- H.
+    reflexivity.
+Qed.
+
+Theorem andb_true_elim2'' : forall b c : bool,
+ andb b c = true -> c = true.
+Proof.
+  intros b c. destruct c eqn:E.
+  - destruct b eqn:Eb.
+    { reflexivity. }
+    { reflexivity. }
+  - destruct b eqn:Eb.
+    { intros H.
+      { rewrite <- H. reflexivity. }
+    }
+    { intros H.
+      { rewrite <- H. reflexivity. }
+    }
+Qed.
+

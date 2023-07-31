@@ -134,16 +134,41 @@ Proof. simpl. reflexivity. Qed.
 Theorem andb_true_elim2 : forall b c : bool,
  andb b c = true -> c = true.
 Proof.
- intros b c. destruct c eqn:E.
- - destruct b eqn:Eb.
-   { destruct c eqn:Ec.
-      { reflexivity. }
-      { reflexivity. }
+  intros b c. destruct c eqn:E.
+  - destruct b eqn:Eb.
+    { reflexivity. }
+    { reflexivity. }
+  - destruct b eqn:Eb.
+    { discriminate. }
+    { discriminate. }
+Qed.
+
+Theorem andb_true_elim2' : forall b c : bool,
+ andb b c = true -> c = true.
+Proof.
+ intros [] [].
+  - reflexivity.
+  - intros H.
+    rewrite <- H.
+    reflexivity.
+  - reflexivity.
+  - intro H.
+    rewrite <- H.
+    reflexivity.
+Qed.
+
+Theorem andb_true_elim2'' : forall b c : bool,
+ andb b c = true -> c = true.
+Proof.
+  intros b c. destruct c eqn:E.
+  - destruct b eqn:Eb.
+    { reflexivity. }
+    { reflexivity. }
+  - destruct b eqn:Eb.
+    { intros H.
+      { rewrite <- H. reflexivity. }
     }
-   { reflexivity. }
- - destruct b eqn:Eb.
-   { destruct c eqn:Ec.
-       { reflexivity. }
-       { reflexivity. }
-  }
+    { intros H.
+      { rewrite <- H. reflexivity. }
+    }
 Qed.
