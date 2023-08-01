@@ -898,3 +898,57 @@ Proof.
     }
 Qed.
 
+(* As you may have noticed, many proofs perform case analysis on a variable right after introducing it:
+       intros x y. destruct y as [|y] eqn:E.
+This pattern is so common that Coq provides a shorthand for it: we can perform case analysis on a variable
+when introducing it by using an intro pattern instead of a variable name. For instance, here is a shorter proof
+of the plus_1_neq_0 theorem above.
+
+(You'll also note one downside of this shorthand: we lose the equation recording the assumption we are making in
+each subgoal, which we previously got from the eqn:E annotation.) *)
+
+Theorem plus_1_neq_0' : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros [ |n].
+  - reflexivity.
+  - reflexivity.
+Qed.
+
+(* If there are no constructor arguments that need names, we can just write [] to get the case analysis. *)
+Theorem andb_commutative''' :
+  forall b c, andb b c = andb c b.
+Proof.
+  intros [] [].
+  - reflexivity.
+  - reflexivity.
+  - reflexivity.
+  - reflexivity.
+Qed.
+
+(* Exercise: 1 star, standard (zero_nbeq_plus_1) *)
+Theorem zero_nbeq_plus_1 : forall n : nat,
+  0 =? (n + 1) = false.
+Proof.
+  intros [ | n].
+  - reflexivity.
+  - reflexivity.
+Qed.
+
+(* ------------------------------------------------------------------------ *)
+(* ------------------------------------------------------------------------ *)
+(* More on Notation (Optional) *)
+
+(* Recall the notation definitions for infix plus and times: *)
+Notation "x + y" := (plus x y)
+                       (at level 50, left associativity)
+                       : nat_scope.
+Notation "x * y" := (mult x y)
+                       (at level 40, left associativity)
+                       : nat_scope.
+
+(* For each notation symbol in Coq, we can specify its precedence level and its associativity. The precedence level n is
+specified by writing at level n; this helps Coq parse compound expressions. The associativity setting helps to
+disambiguate expressions containing multiple occurrences of the same symbol. For example, the parameters
+specified above for + and × say that the expression 1+2*3*4 is shorthand for (1+((2*3)*4)). Coq uses precedence
+levels from 0 to 100, and left, right, or no associativity. We will see more examples of this later, e.g., in the Lists chapter.*)
