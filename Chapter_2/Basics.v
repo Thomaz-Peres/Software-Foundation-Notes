@@ -952,3 +952,14 @@ specified by writing at level n; this helps Coq parse compound expressions. The 
 disambiguate expressions containing multiple occurrences of the same symbol. For example, the parameters
 specified above for + and × say that the expression 1+2*3*4 is shorthand for (1+((2*3)*4)). Coq uses precedence
 levels from 0 to 100, and left, right, or no associativity. We will see more examples of this later, e.g., in the Lists chapter.*)
+
+(* Each notation symbol is also associated with a notation scope. Coq tries to guess what scope is meant from context,
+so when it sees S(O×O) it guesses nat_scope, but when it sees the product type bool×bool (which we'll see in later chapters)
+it guesses type_scope. Occasionally, it is necessary to help it out with percent-notation by writing (x×y)%nat,
+and sometimes in what Coq prints it will use %nat to indicate what scope a notation is in *)
+
+(* Notation scopes also apply to numeral notation (3, 4, 5, 42, etc.), so you may sometimes see 0%nat,
+which means O (the natural number 0 that we're using in this chapter), or 0%Z, which means the integer zero
+(which comes from a different part of the standard library). *)
+
+(* Pro tip: Coq's notation mechanism is not especially powerful. Don't expect too much from it. *)
