@@ -131,7 +131,7 @@ Proof. simpl. reflexivity. Qed.
   Hint 2: When you reach contradiction in the hypotheses, focus on how to rewrite with that contradiction.
 *)
 
-Theorem andb_true_elim2 : forall b c : bool,
+(* Theorem andb_true_elim2 : forall b c : bool,
  andb b c = true -> c = true.
 Proof.
   intros b c. destruct c eqn:E.
@@ -171,4 +171,13 @@ Proof.
     { intros H.
       { rewrite <- H. reflexivity. }
     }
+Qed. *)
+
+Theorem identity_fn_applied_twice :
+  forall (f : bool -> bool), (forall (x : bool), f x = x) -> forall (b : bool), f (f b) = b.
+Proof.
+  intros f x b.
+  rewrite x.
+  rewrite x.
+  reflexivity.
 Qed.

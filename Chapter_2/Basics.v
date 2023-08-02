@@ -96,6 +96,8 @@ Definition orb' (b1:bool) (b2:bool) : bool :=
   if b1 then true
   else b2.
 
+Check orb'.
+
 
 (* ------------------------------------------------------------------------ *)
 (* Types *)
@@ -399,6 +401,7 @@ Fixpoint minus (n m:nat) : nat :=
   | S _ , O => n
   | S n', S m' => minus n' m'
   end.
+
 End NatPlayground2.
 Fixpoint exp (base power : nat) : nat :=
   match power with
@@ -857,7 +860,7 @@ Qed.
   AND THE THIRD IT IS ME AFTER READING THE AND SE THE SECOND SOLUTION I FOUND. *)
 
 Theorem andb_true_elim2 : forall b c : bool,
- andb b c = true -> c = true.
+  andb b c = true -> c = true.
 Proof.
   intros b c. destruct c eqn:E.
   - destruct b eqn:Eb.
@@ -898,6 +901,17 @@ Proof.
     }
 Qed.
 
+Theorem andb_true_elim2''' : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+  intros b c.
+  destruct c eqn:EqnC.
+  - reflexivity.
+  - intros H. rewrite <- H. destruct b eqn: EqnB.
+    + simpl. reflexivity.
+    + simpl. reflexivity.
+  Qed.
+
 (* As you may have noticed, many proofs perform case analysis on a variable right after introducing it:
        intros x y. destruct y as [|y] eqn:E.
 This pattern is so common that Coq provides a shorthand for it: we can perform case analysis on a variable
@@ -932,7 +946,7 @@ Theorem zero_nbeq_plus_1 : forall n : nat,
 Proof.
   intros [ | n].
   - reflexivity.
-  - reflexivity.
+  - simpl. reflexivity.
 Qed.
 
 (* ------------------------------------------------------------------------ *)
@@ -963,3 +977,60 @@ which means O (the natural number 0 that we're using in this chapter), or 0%Z, w
 (which comes from a different part of the standard library). *)
 
 (* Pro tip: Coq's notation mechanism is not especially powerful. Don't expect too much from it. *)
+
+
+(* ------------------------------------------------------------------------ *)
+(* ------------------------------------------------------------------------ *)
+(* Fixpoints and Structural Recursion (Optional) *)
+Fixpoint plus' (n : nat) (m : nat) : nat :=
+  match n with
+  | O => m
+  | S n' => S (plus' n' m)
+  end.
+  (* intros b c. destruct c eqn:E. *)
+(* More Exercises *)
+(* Exercise: 1 star, standard (identity_fn_applied_twice) *)
+Theorem identity_fn_applied_twice :
+  forall (f : bool -> bool),
+  (forall (x : bool), f x = x) ->
+  forall (b : bool), f (f b) = b.
+Proof.
+  intros f x b.
+  rewrite x.
+  rewrite x.
+  reflexivity.
+Qed.
+
+(* Exercise: 1 star, standard (negation_fn_applied_twice) *)
+
+Theorem negation_fn_applied_twice :
+  forall (f : bool -> bool),
+  (forall (x : bool), f x = negb x) ->
+  forall (b : bool), f (f b) = b.
+Proof.
+  intros f x b.
+  rewrite x.
+  rewrite x.
+  destruct b eqn:Eb.
+    * simpl. reflexivity.
+    * simpl. reflexivity.
+Qed.
+
+(* Do not modify the following line: *)
+Definition manual_grade_for_negation_fn_applied_twice : option (nat*string) := None.
+
+(* (The last definition is used by the autograder.) ☐ *)
+
+(* Exercise: 3 stars, standard, optional (andb_eq_orb) *)
+Theorem andb_eq_orb :
+  forall (b c : bool),
+  (andb b c = orb b c) ->
+  b = c.
+Proof.
+  intros b c.
+  intros H.
+  destruct b eqn:Eb.
+  rewrite H.
+    - destruct c eqn:Ec.
+      ** simpl. reflexivity.
+      ** simpl. reflexivity.
