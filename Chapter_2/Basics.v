@@ -1126,11 +1126,20 @@ Fixpoint incr (m:bin) : bin :=
   | B1 m' => B0 (incr m')
   end.
 
-Fixpoint bin_to_nat (m:bin) : nat :=
+  (* This is my first try *)
+(* Fixpoint bin_to_nat (m:bin) : nat :=
   match m with
   | Z => O
   | B1 m' => S O
   | B0 m' => S (bin_to_nat m')
+  end. *)
+
+  (* After I seeign the answer (The answer on second match use 2 * instead the S i have used ) *) 
+Fixpoint bin_to_nat (m:bin) : nat :=
+  match m with
+  | Z => O
+  | B0 m' => S (bin_to_nat m')
+  | B1 m' => 1 + 2 * (bin_to_nat m')
   end.
 
 Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
@@ -1142,12 +1151,19 @@ Proof. simpl. reflexivity. Qed.
 Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
 Proof. simpl. reflexivity. Qed.
 
-Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
+Example test_bin_incr4 : bin_to_nat (incr (B1 Z)) = 2.
 Proof. simpl. reflexivity. Qed.
 
 Example test_bin_incr5 :
         bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
 Proof. simpl. reflexivity. Qed.
 
+Example teste1 : incr (incr (B1 Z)) =  B1 (B1 Z).
+Proof. simpl. reflexivity. Qed.
+
+Example test2 : bin_to_nat(incr(incr (B1 Z))) = 3.
+Proof. simpl. reflexivity. Qed.
+
 Example test_bin_incr6 :
         bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
+Proof. simpl. reflexivity. Qed.

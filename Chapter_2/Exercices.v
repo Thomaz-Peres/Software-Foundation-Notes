@@ -231,12 +231,13 @@ Theorem andb_eq_orb :
 Proof.
   intros b c x. *)
 
-(* Theorem andb_eq_orb :
+Theorem andb_eq_orb :
   forall (b c : bool),
   (andb b c = orb b c) ->
   b = c.
 Proof.
   intros b c.
   destruct b.
-  simpl. intros x. reflexivity. *)
+  simpl. intros x. rewrite x. reflexivity.
+  simpl. intros x. rewrite x. reflexivity.
 (* ------------------------------------------------------------------------------- *)
