@@ -1074,7 +1074,7 @@ Proof.
     For example:
         decimal               binary                          unary
            0                       Z                              O
-           1                    B1 Z                            S O
+           1                   B1 Z                            S O
            2                B0 (B1 Z)                        S (S O)
            3                B1 (B1 Z)                     S (S (S O))
            4            B0 (B0 (B1 Z))                 S (S (S (S O)))
@@ -1126,8 +1126,12 @@ Fixpoint incr (m:bin) : bin :=
   | B1 m' => B0 (incr m')
   end.
 
-Fixpoint bin_to_nat (m:bin) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint bin_to_nat (m:bin) : nat :=
+  match m with
+  | Z => O
+  | B1 m' => S O
+  | B0 m' => S (bin_to_nat m')
+  end.
 
 Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
 Proof. simpl. reflexivity. Qed.
