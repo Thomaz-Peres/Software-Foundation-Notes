@@ -490,7 +490,6 @@ Fixpoint leb (n m : nat) : bool :=
       match m with
       | O => false
       | S m' => leb n' m'
-
       end
   end.
 
@@ -514,7 +513,16 @@ that we can try to prove, while x =? y is an expression whose value
 (either true or false) we can compute. *)
 
 (* Exercise: 1 star, standard (ltb) *)
-Fixpoint ltb (n m : nat) : bool :=
+
+(* I learned to make this to another way rereading the book
+  Because I'm doing it in a group, and I like what I did  *)
+
+(* The new *)
+Definition ltb (n m : nat) : bool :=
+  leb n m && negb (n =? m).
+
+(* The old  *)
+Fixpoint ltb_old (n m : nat) : bool :=
   match n with
   | O => 
         match m with
@@ -524,7 +532,7 @@ Fixpoint ltb (n m : nat) : bool :=
   | S n' => 
         match m with
         | O => false
-        | S m' => ltb n' m'
+        | S m' => ltb_old n' m'
         end
   end.
 
